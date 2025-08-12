@@ -12,7 +12,7 @@ app = FastAPI()
 # Static folder for CSS
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-MODEL_PATH = "model\c_resnet50_autism_best_model4.keras"
+MODEL_PATH = "model\model.keras"
 model = load_model(MODEL_PATH)
 
 def preprocess_image(image_bytes):
@@ -36,3 +36,4 @@ async def predict(file: UploadFile = File(...)):
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
