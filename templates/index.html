@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Autism Image Classifier</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .container {
+            max-width: 400px;
+            margin: auto;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+
+        .upload-box {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .image-preview {
+            margin-top: 15px;
+        }
+
+        .image-preview img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+        }
+
+        .result-box {
+            margin-top: 20px;
+            padding: 10px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Autism Detection</h1>
+        <div class="upload-box" id="drop-area">
+            <p>Drag & Drop Image Here</p>
+            <p>or</p>
+            <input type="file" id="file-input" accept="image/*">
+            <div class="image-preview" id="image-preview"></div>
+        </div>
+        <button id="predict-btn">Predict</button>
+
+        <!-- Prediction box always below -->
+        <div class="result-box" id="result-box">
+            Prediction will appear here.
+        </div>
+    </div>
+
+    <script>
+        let selectedFile = null;
+
+        document.getElementById('file-input').addEventListener('change', (event) => {
+            selectedFile = event.target.files[0];
+
+            if (selectedFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('image-preview').innerHTML = `<img src="${e.target.result}" alt="Uploaded Image">`;
+                };
+                reader.readAsDataURL(selectedFile);
+            }
+        });
+
+        document.getElementById('predict-btn').addEventListener('click', async () => {
+            if (!selectedFile) {
+                alert("Please upload an image first!");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("file", selectedFile);
+
+            const res = await fetch("/predict", {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await res.json();
+            document.getElementById('result-box').innerText = `${data.prediction}`;
+        });
+    </script>
+
+    <!-- Disclaimer Below Main Box -->
+    <div class="disclaimer">
+        <strong>Note:</strong> This is not a definitive test for autism. <br>Please consult pediatricians and therapists for a proper diagnosis and assessment.<br>
+       <b> For best results, upload clear, non-blurry facial images of children aged 2-8 years.<b>
+    </div>
+</body>
+</html>

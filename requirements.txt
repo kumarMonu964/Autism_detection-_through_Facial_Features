@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+tensorflow
+numpy
+Pillow
+jinja2
+requests
+fastapi
+uvicorn
+tensorflow
+pillow
+numpy
+python-multipart
